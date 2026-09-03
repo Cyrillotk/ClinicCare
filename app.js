@@ -1,5 +1,6 @@
 const express = require("express");
-const sessions = require("express-session");
+const session = require("express-session");
+const authRoutes = require("./routes/authRoutes");
 const path = require("path");
 require("dotenv").config();
 
@@ -19,7 +20,7 @@ app.use(express.static(path.join(__dirname,"public")));
 app.get("/",(req, res) => {
     res.render("pages/home");
 });
-
+//for authentication with express-session
 app.use(
     session({
         secret: process.env.SESSION_SECRET,
@@ -27,6 +28,8 @@ app.use(
         saveUninitialized:false
     })
 );
+//routes
+app.use("/",authRoutes);
 
 const PORT=process.env.PORT || 3000;
 
