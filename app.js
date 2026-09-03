@@ -4,36 +4,39 @@ const express = require("express");
 const session = require("express-session");
 const authRoutes = require("./routes/authRoutes");
 const path = require("path");
-
 const connectDB = require("./config/database");
 
 const app = express();
 
 connectDB();
 
-app.set("view engine","ejs");
-app.set("views",path.join(__dirname,"views"));
-//middleware
-app.use(express.urlencoded({extended:true}));
-app.use(express.json());
-app.use(express.static(path.join(__dirname,"public")));
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
 
-app.get("/",(req, res) => {
+// Middleware
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.static(path.join(__dirname, "public")));
+
+// Home route
+app.get("/", (req, res) => {
     res.render("pages/home");
 });
-//for authentication with express-session
+
+// Express Session
 app.use(
     session({
         secret: process.env.SESSION_SECRET,
         resave: false,
-        saveUninitialized:false
+        saveUninitialized: false
     })
 );
-//routes
-app.use("/",authRoutes);
 
-const PORT=process.env.PORT || 3000;
+// Routes
+app.use("/", authRoutes);
 
-app.listen(3000,() => {
-    console.log("server running on port 3000");
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+    console.log(`server running on port ${PORT}`);
 });
