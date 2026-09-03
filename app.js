@@ -1,4 +1,5 @@
 const express = require("express");
+const sessions = require("express-session");
 const path = require("path");
 require("dotenv").config();
 
@@ -18,6 +19,14 @@ app.use(express.static(path.join(__dirname,"public")));
 app.get("/",(req, res) => {
     res.render("pages/home");
 });
+
+app.use(
+    session({
+        secret: process.env.SESSION_SECRET,
+        resave: false,
+        saveUninitialized:false
+    })
+);
 
 const PORT=process.env.PORT || 3000;
 
