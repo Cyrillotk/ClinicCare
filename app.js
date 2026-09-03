@@ -2,7 +2,11 @@ const express = require("express");
 const path = require("path");
 require("dotenv").config();
 
+const connectDB = require("./config/database");
+
 const app = express();
+
+connectDB();
 
 app.set("view engine","ejs");
 app.set("views",path.join(__dirname,"views"));
