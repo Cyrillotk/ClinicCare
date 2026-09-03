@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Patients - ClinicCare</title>
+</head>
+
+<body>
+
+    <h1>Patients</h1>
+
+    <a href="/patients/new">Add New Patient</a>
+
+    <br><br>
+
+    <% if (patients.length === 0) { %>
+
+        <p>No patients registered yet.</p>
+
+    <% } else { %>
+
+        <table border="1" cellpadding="10">
+
+            <thead>
+                <tr>
+                    <th>Patient ID</th>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Gender</th>
+                    <th>Phone</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                <% patients.forEach(patient => { %>
+
+                    <tr>
+                        <td><%= patient.patientId %></td>
+                        <td><%= patient.name %></td>
+                        <td><%= patient.age %></td>
+                        <td><%= patient.gender %></td>
+                        <td><%= patient.phone %></td>
+
+                        <td>
+
+                            <a href="/patients/<%= patient._id %>/edit">
+                                Edit
+                            </a>
+
+                            <form
+                                action="/patients/<%= patient._id %>/delete"
+                                method="POST"
+                                style="display:inline;"
+                            >
+                                <button type="submit">
+                                    Delete
+                                </button>
+                            </form>
+
+                        </td>
+                    </tr>
+
+                <% }) %>
+
+            </tbody>
+
+        </table>
+
+    <% } %>
+
+    <br>
+
+    <a href="/dashboard">Dashboard</a>
+
+</body>
+</html>
