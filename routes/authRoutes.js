@@ -2,14 +2,14 @@ const express = require("express");
 
 const router = express.Router();
 
-// Login
+// Login page
 router.get("/login", (req, res) => {
-    res.render("pages/login");
+    res.render("auth/login");
 });
 
-// Register
+// Register page
 router.get("/register", (req, res) => {
-    res.render("pages/register");
+    res.render("auth/register");
 });
 
 // Dashboard
@@ -17,19 +17,19 @@ router.get("/dashboard", (req, res) => {
     res.render("pages/dashboard");
 });
 
-// Appointments list
-router.get("/appointments", (req, res) => {
-    res.render("pages/index");
+// Patients
+router.get("/patients", (req, res) => {
+    res.render("patients/index");
 });
 
-// New appointment
-router.get("/appointments/new", (req, res) => {
-    res.render("pages/new");
+router.get("/patients/new", (req, res) => {
+    res.render("patients/new");
 });
 
-// Edit appointment
-router.get("/appointments/edit/:id", (req, res) => {
-    res.render("pages/edit");
+router.get("/patients/edit/:id", (req, res) => {
+    res.render("patients/edit", {
+        id: req.params.id
+    });
 });
 
 module.exports = router;
