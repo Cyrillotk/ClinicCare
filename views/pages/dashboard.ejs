@@ -2,21 +2,43 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>ClinicCare Dashboard</title>
+    <title>Dashboard - ClinicCare</title>
 </head>
 
 <body>
 
     <h1>ClinicCare Dashboard</h1>
 
-    <p>Welcome, <%= username %>!</p>
+    <p>
+        Welcome, <%= username %>!
+    </p>
 
-    <a href="/patients">Patients</a>
+    <nav>
 
-    <br><br>
+        <a href="/patients">
+            Patients
+        </a>
+
+        <br><br>
+
+        <a href="/doctors">
+            Doctors
+        </a>
+
+        <br><br>
+
+        <a href="/appointments">
+            Appointments
+        </a>
+
+    </nav>
+
+    <br>
 
     <form action="/logout" method="POST">
-        <button type="submit">Logout</button>
+        <button type="submit">
+            Logout
+        </button>
     </form>
 
 </body>

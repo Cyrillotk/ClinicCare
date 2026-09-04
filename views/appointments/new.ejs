@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>New Appointment - ClinicCare</title>
+</head>
+
+<body>
+
+<h1>Book Appointment</h1>
+
+<form action="/appointments" method="POST">
+
+    <label>Patient</label>
+
+    <select name="patient" required>
+
+        <option value="">Select patient</option>
+
+        <% patients.forEach(patient => { %>
+
+            <option value="<%= patient._id %>">
+                <%= patient.name %> - <%= patient.patientId %>
+            </option>
+
+        <% }) %>
+
+    </select>
+
+    <br><br>
+
+    <label>Doctor</label>
+
+    <select name="doctor" required>
+
+        <option value="">Select doctor</option>
+
+        <% doctors.forEach(doctor => { %>
+
+            <option value="<%= doctor._id %>">
+                Dr. <%= doctor.name %> -
+                <%= doctor.specialization %>
+            </option>
+
+        <% }) %>
+
+    </select>
+
+    <br><br>
+
+    <label>Date</label>
+
+    <input
+        type="date"
+        name="date"
+        required
+    >
+
+    <br><br>
+
+    <label>Time</label>
+
+    <input
+        type="time"
+        name="time"
+        required
+    >
+
+    <br><br>
+
+    <label>Reason</label>
+
+    <textarea
+        name="reason"
+        required
+    ></textarea>
+
+    <br><br>
+
+    <button type="submit">
+        Book Appointment
+    </button>
+
+</form>
+
+<br>
+
+<a href="/appointments">
+    Back to Appointments
+</a>
+
+</body>
+</html>

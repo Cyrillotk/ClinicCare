@@ -1,24 +1,37 @@
-const Patient = require("./models/Patient");
+const Patient = require("../models/Patient");
 
 exports.listPatients = async (req, res) => {
     try {
-        const patients = await Patient.find().sort({ createdAt: -1 });
+        const search = req.query.search || "";
+
+        const filter = search
+            ? {
+                  $or: [
+                      { name: { $regex: search, $options: "i" } },
+                      { patientId: { $regex: search, $options: "i" } },
+                      { phone: { $regex: search, $options: "i" } }
+                  ]
+              }
+            : {};
+
+        const patients = await Patient.find(filter).sort({
+            createdAt: -1
+        });
 
         res.render("patients/index", {
-            patients
+            patients,
+            search
         });
 
     } catch (error) {
         console.error(error);
-        res.status(500).send("Failed to load patients.");
+        res.status(500).send("Unable to load patients.");
     }
 };
 
 exports.showCreateForm = (req, res) => {
     res.render("patients/new");
 };
-
-//Creating a patient
 
 exports.createPatient = async (req, res) => {
     try {
@@ -31,27 +44,42 @@ exports.createPatient = async (req, res) => {
             address
         } = req.body;
 
-        if (!name || !patientId || !age || !gender || !phone || !address) {
-            return res.send("All patient fields are required.");
+        if (
+            !name ||
+            !patientId ||
+            age === undefined ||
+            !gender ||
+            !phone ||
+            !address
+        ) {
+            return res.status(400).send("All patient fields are required.");
+        }
+
+        if (Number(age) < 0) {
+            return res.status(400).send("Age cannot be negative.");
         }
 
         await Patient.create({
-            name,
-            patientId,
-            age,
+            name: name.trim(),
+            patientId: patientId.trim(),
+            age: Number(age),
             gender,
-            phone,
-            address
+            phone: phone.trim(),
+            address: address.trim()
         });
 
         res.redirect("/patients");
 
     } catch (error) {
         console.error(error);
-        res.status(500).send("Failed to create patient.");
+
+        if (error.code === 11000) {
+            return res.status(409).send("Patient ID already exists.");
+        }
+
+        res.status(500).send("Unable to create patient.");
     }
 };
-//Edit patient
 
 exports.showEditForm = async (req, res) => {
     try {
@@ -67,11 +95,9 @@ exports.showEditForm = async (req, res) => {
 
     } catch (error) {
         console.error(error);
-        res.status(500).send("Failed to load patient.");
+        res.status(500).send("Unable to load patient.");
     }
 };
-
-//Updating a patient
 
 exports.updatePatient = async (req, res) => {
     try {
@@ -84,21 +110,35 @@ exports.updatePatient = async (req, res) => {
             address
         } = req.body;
 
-        if (!name || !patientId || !age || !gender || !phone || !address) {
-            return res.send("All patient fields are required.");
+        if (
+            !name ||
+            !patientId ||
+            age === undefined ||
+            !gender ||
+            !phone ||
+            !address
+        ) {
+            return res.status(400).send("All patient fields are required.");
+        }
+
+        if (Number(age) < 0) {
+            return res.status(400).send("Age cannot be negative.");
         }
 
         const patient = await Patient.findByIdAndUpdate(
             req.params.id,
             {
-                name,
-                patientId,
-                age,
+                name: name.trim(),
+                patientId: patientId.trim(),
+                age: Number(age),
                 gender,
-                phone,
-                address
+                phone: phone.trim(),
+                address: address.trim()
             },
-            { new: true, runValidators: true }
+            {
+                new: true,
+                runValidators: true
+            }
         );
 
         if (!patient) {
@@ -109,11 +149,14 @@ exports.updatePatient = async (req, res) => {
 
     } catch (error) {
         console.error(error);
-        res.status(500).send("Failed to update patient.");
+
+        if (error.code === 11000) {
+            return res.status(409).send("Patient ID already exists.");
+        }
+
+        res.status(500).send("Unable to update patient.");
     }
 };
-
-//Deleting a patient
 
 exports.deletePatient = async (req, res) => {
     try {
@@ -127,6 +170,6 @@ exports.deletePatient = async (req, res) => {
 
     } catch (error) {
         console.error(error);
-        res.status(500).send("Failed to delete patient.");
+        res.status(500).send("Unable to delete patient.");
     }
 };

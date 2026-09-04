@@ -3,6 +3,14 @@ require("dotenv").config();
 const express = require("express");
 const session = require("express-session");
 const authRoutes = require("./routes/authRoutes");
+
+const patientRoutes = require("./routes/patientRoutes");
+
+const doctorRoutes = require("./routes/doctorRoutes");
+
+const appointmentRoutes =
+    require("./routes/appointmentRoutes");
+
 const path = require("path");
 const connectDB = require("./config/database");
 
@@ -34,6 +42,24 @@ app.use(
 
 // Routes
 app.use("/", authRoutes);
+
+app.use("/", patientRoutes);
+
+app.use("/", doctorRoutes);
+
+app.use("/", appointmentRoutes);
+
+// 404 handler
+app.use((req, res) => {
+    res.status(404).render("errors/404");
+});
+
+// 500 error handler
+app.use((err, req, res, next) => {
+    console.error(err);
+
+    res.status(500).render("errors/500");
+});
 
 const PORT = process.env.PORT || 3000;
 
