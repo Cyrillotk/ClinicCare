@@ -2,22 +2,21 @@ require("dotenv").config();
 
 const express = require("express");
 const session = require("express-session");
-const authRoutes = require("./routes/authRoutes");
-
-const patientRoutes = require("./routes/patientRoutes");
-
-const doctorRoutes = require("./routes/doctorRoutes");
-
-const appointmentRoutes =
-    require("./routes/appointmentRoutes");
-
 const path = require("path");
+
 const connectDB = require("./config/database");
+
+const authRoutes = require("./routes/authRoutes");
+const patientRoutes = require("./routes/patientRoutes");
+const doctorRoutes = require("./routes/doctorRoutes");
+const appointmentRoutes = require("./routes/appointmentRoutes");
 
 const app = express();
 
+// Connect to MongoDB
 connectDB();
 
+// EJS configuration
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
@@ -26,29 +25,34 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
+// Session
+app.use(
+    session({
+        secret: process.env.SESSION_SECRET,
+        resave: false,
+        saveUninitialized: false,
+        cookie: {
+            httpOnly: true,
+            maxAge: 1000 * 60 * 60
+        }
+    })
+);
+
 // Home route
 app.get("/", (req, res) => {
     res.render("pages/home");
 });
 
-// Express Session
-app.use(
-    session({
-        secret: process.env.SESSION_SECRET,
-        resave: false,
-        saveUninitialized: false
-    })
-);
-
 // Routes
+console.log("AUTH:", typeof authRoutes);
+console.log("PATIENT:", typeof patientRoutes);
+console.log("DOCTOR:", typeof doctorRoutes);
+console.log("APPOINTMENT:", typeof appointmentRoutes);
+
 app.use("/", authRoutes);
-
-app.use("/", patientRoutes);
-
-app.use("/", doctorRoutes);
-
-app.use("/", appointmentRoutes);
-
+app.use("/patients", patientRoutes);
+app.use("/doctors", doctorRoutes);
+app.use("/appointments", appointmentRoutes);
 // 404 handler
 app.use((req, res) => {
     res.status(404).render("errors/404");
