@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const patientSchema = new mongoose.Schema(
+const doctorSchema = new mongoose.Schema(
     {
         name: {
             type: String,
@@ -8,23 +8,10 @@ const patientSchema = new mongoose.Schema(
             trim: true
         },
 
-        patientId: {
+        specialization: {
             type: String,
             required: true,
-            unique: true,
             trim: true
-        },
-
-        age: {
-            type: Number,
-            required: true,
-            min: 0
-        },
-
-        gender: {
-            type: String,
-            required: true,
-            enum: ["Male", "Female", "Other"]
         },
 
         phone: {
@@ -33,10 +20,9 @@ const patientSchema = new mongoose.Schema(
             trim: true
         },
 
-        address: {
-            type: String,
-            required: true,
-            trim: true
+        availableDays: {
+            type: [String],
+            default: []
         }
     },
     {
@@ -44,4 +30,4 @@ const patientSchema = new mongoose.Schema(
     }
 );
 
-module.exports = mongoose.model("Patient", patientSchema);
+module.exports = mongoose.model("Doctor", doctorSchema);
