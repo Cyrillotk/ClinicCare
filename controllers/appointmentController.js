@@ -1,24 +1,43 @@
 const Appointment = require("../models/Appointment");
 const Patient = require("../models/Patient");
-const Doctor = require("./models/Doctor");
+const Doctor = require("../models/Doctor");
 
 exports.listAppointments = async (req, res) => {
     try {
-        const appointments = await Appointment.find()
+        const { search, status } = req.query;
+
+        const filter = {};
+
+        if (status) {
+            filter.status = status;
+        }
+
+        let appointments = await Appointment.find(filter)
             .populate("patient")
             .populate("doctor")
-            .sort({
-                date: 1,
-                time: 1
+            .sort({ date: 1, time: 1 });
+
+        // Search by patient name or doctor name (done after populate,
+        // since those fields live on referenced documents).
+        if (search) {
+            const term = search.toLowerCase();
+            appointments = appointments.filter((appt) => {
+                const patientName = appt.patient?.name?.toLowerCase() || "";
+                const doctorName = appt.doctor?.name?.toLowerCase() || "";
+                return patientName.includes(term) || doctorName.includes(term);
             });
+        }
 
         res.render("appointments/index", {
-            appointments
+            appointments,
+            search: search || "",
+            status: status || ""
         });
 
     } catch (error) {
         console.error(error);
-        res.status(500).send("Unable to load appointments.");
+        req.flash("error", "Unable to load appointments.");
+        res.redirect("/dashboard");
     }
 };
 
@@ -27,37 +46,26 @@ exports.showCreateForm = async (req, res) => {
         const patients = await Patient.find().sort({ name: 1 });
         const doctors = await Doctor.find().sort({ name: 1 });
 
-        res.render("appointments/new", {
-            patients,
-            doctors
-        });
+        res.render("appointments/new", { patients, doctors });
 
     } catch (error) {
         console.error(error);
-        res.status(500).send("Unable to load appointment form.");
+        req.flash("error", "Unable to load appointment form.");
+        res.redirect("/appointments");
     }
 };
 
 exports.createAppointment = async (req, res) => {
     try {
-        const {
-            patient,
-            doctor,
-            date,
-            time,
-            reason
-        } = req.body;
+        const { patient, doctor, date, time, reason } = req.body;
 
         if (!patient || !doctor || !date || !time || !reason) {
-            return res.status(400).send(
-                "All appointment fields are required."
-            );
+            req.flash("error", "All appointment fields are required.");
+            return res.redirect("/appointments/new");
         }
 
-        // Business rule:
-        // A doctor cannot have two scheduled appointments
+        // Business rule: a doctor cannot have two active appointments
         // at the same date and time.
-
         const existingAppointment = await Appointment.findOne({
             doctor,
             date: new Date(date),
@@ -66,9 +74,8 @@ exports.createAppointment = async (req, res) => {
         });
 
         if (existingAppointment) {
-            return res.status(409).send(
-                "This doctor already has an appointment at that date and time."
-            );
+            req.flash("error", "Time slot unavailable: this doctor already has an appointment then.");
+            return res.redirect("/appointments/new");
         }
 
         await Appointment.create({
@@ -79,61 +86,44 @@ exports.createAppointment = async (req, res) => {
             reason: reason.trim()
         });
 
+        req.flash("success", "Appointment created successfully.");
         res.redirect("/appointments");
 
     } catch (error) {
         console.error(error);
-        res.status(500).send("Unable to create appointment.");
+        req.flash("error", "Unable to create appointment.");
+        res.redirect("/appointments/new");
     }
 };
 
 exports.showEditForm = async (req, res) => {
     try {
-        const appointment = await Appointment.findById(
-            req.params.id
-        );
+        const appointment = await Appointment.findById(req.params.id);
 
         if (!appointment) {
-            return res.status(404).send("Appointment not found.");
+            req.flash("error", "Appointment not found.");
+            return res.redirect("/appointments");
         }
 
         const patients = await Patient.find().sort({ name: 1 });
         const doctors = await Doctor.find().sort({ name: 1 });
 
-        res.render("appointments/edit", {
-            appointment,
-            patients,
-            doctors
-        });
+        res.render("appointments/edit", { appointment, patients, doctors });
 
     } catch (error) {
         console.error(error);
-        res.status(500).send("Unable to load appointment.");
+        req.flash("error", "Unable to load appointment.");
+        res.redirect("/appointments");
     }
 };
 
 exports.updateAppointment = async (req, res) => {
     try {
-        const {
-            patient,
-            doctor,
-            date,
-            time,
-            reason,
-            status
-        } = req.body;
+        const { patient, doctor, date, time, reason, status } = req.body;
 
-        if (
-            !patient ||
-            !doctor ||
-            !date ||
-            !time ||
-            !reason ||
-            !status
-        ) {
-            return res.status(400).send(
-                "All appointment fields are required."
-            );
+        if (!patient || !doctor || !date || !time || !reason || !status) {
+            req.flash("error", "All appointment fields are required.");
+            return res.redirect(`/appointments/${req.params.id}/edit`);
         }
 
         const existingAppointment = await Appointment.findOne({
@@ -145,61 +135,53 @@ exports.updateAppointment = async (req, res) => {
         });
 
         if (existingAppointment) {
-            return res.status(409).send(
-                "This doctor already has an appointment at that date and time."
-            );
+            req.flash("error", "Time slot unavailable: this doctor already has an appointment then.");
+            return res.redirect(`/appointments/${req.params.id}/edit`);
         }
 
-        const appointment =
-            await Appointment.findByIdAndUpdate(
-                req.params.id,
-                {
-                    patient,
-                    doctor,
-                    date: new Date(date),
-                    time,
-                    reason: reason.trim(),
-                    status
-                },
-                {
-                    new: true,
-                    runValidators: true
-                }
-            );
+        const appointment = await Appointment.findByIdAndUpdate(
+            req.params.id,
+            {
+                patient,
+                doctor,
+                date: new Date(date),
+                time,
+                reason: reason.trim(),
+                status
+            },
+            { new: true, runValidators: true }
+        );
 
         if (!appointment) {
-            return res.status(404).send(
-                "Appointment not found."
-            );
+            req.flash("error", "Appointment not found.");
+            return res.redirect("/appointments");
         }
 
+        req.flash("success", "Appointment updated successfully.");
         res.redirect("/appointments");
 
     } catch (error) {
         console.error(error);
-        res.status(500).send("Unable to update appointment.");
+        req.flash("error", "Unable to update appointment.");
+        res.redirect("/appointments");
     }
 };
 
 exports.deleteAppointment = async (req, res) => {
     try {
-        const appointment =
-            await Appointment.findByIdAndDelete(
-                req.params.id
-            );
+        const appointment = await Appointment.findByIdAndDelete(req.params.id);
 
         if (!appointment) {
-            return res.status(404).send(
-                "Appointment not found."
-            );
+            req.flash("error", "Appointment not found.");
+            return res.redirect("/appointments");
         }
 
+        req.flash("success", "Appointment deleted.");
         res.redirect("/appointments");
 
     } catch (error) {
         console.error(error);
-        res.status(500).send(
-            "Unable to delete appointment."
-        );
+        req.flash("error", "Unable to delete appointment.");
+        res.redirect("/appointments");
     }
 };

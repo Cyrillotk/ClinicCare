@@ -1,0 +1,49 @@
+<%- include('../partials/header', { title: 'Edit Appointment' }) %>
+<%- include('../partials/nav') %>
+<%- include('../partials/messages') %>
+
+<h1>Edit Appointment</h1>
+
+<form action="/appointments/<%= appointment._id %>/update" method="POST">
+
+    <label for="patient">Patient</label>
+    <select id="patient" name="patient" required>
+        <% patients.forEach(function(p) { %>
+            <option value="<%= p._id %>" <%= String(appointment.patient) === String(p._id) ? 'selected' : '' %>>
+                <%= p.name %> (<%= p.patientId %>)
+            </option>
+        <% }) %>
+    </select>
+
+    <label for="doctor">Doctor</label>
+    <select id="doctor" name="doctor" required>
+        <% doctors.forEach(function(d) { %>
+            <option value="<%= d._id %>" <%= String(appointment.doctor) === String(d._id) ? 'selected' : '' %>>
+                <%= d.name %> (<%= d.specialization %>)
+            </option>
+        <% }) %>
+    </select>
+
+    <label for="date">Date</label>
+    <input type="date" id="date" name="date" value="<%= appointment.date.toISOString().slice(0, 10) %>" required>
+
+    <label for="time">Time</label>
+    <input type="time" id="time" name="time" value="<%= appointment.time %>" required>
+
+    <label for="reason">Reason</label>
+    <textarea id="reason" name="reason" rows="3" required><%= appointment.reason %></textarea>
+
+    <label for="status">Status</label>
+    <select id="status" name="status" required>
+        <option value="Scheduled" <%= appointment.status === 'Scheduled' ? 'selected' : '' %>>Scheduled</option>
+        <option value="Completed" <%= appointment.status === 'Completed' ? 'selected' : '' %>>Completed</option>
+        <option value="Cancelled" <%= appointment.status === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
+    </select>
+
+    <button type="submit">Update Appointment</button>
+
+</form>
+
+<p><a href="/appointments">Back to Appointments</a></p>
+
+<%- include('../partials/footer') %>
