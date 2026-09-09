@@ -1,24 +1,16 @@
 const express = require("express");
-
 const router = express.Router();
 
-// Appointments list
-router.get("/appointments", (req, res) => {
-    res.render("appointments/index", {
-        appointments: []
-    });
-});
+const appointmentController = require("../controllers/appointmentController");
+const { requireAuth } = require("../middleware/authMiddleware");
 
-// New appointment page
-router.get("/appointments/new", (req, res) => {
-    res.render("appointments/new");
-});
+router.use(requireAuth);
 
-// Edit appointment page
-router.get("/appointments/edit/:id", (req, res) => {
-    res.render("appointments/edit", {
-        id: req.params.id
-    });
-});
+router.get("/", appointmentController.listAppointments);
+router.get("/new", appointmentController.showCreateForm);
+router.post("/", appointmentController.createAppointment);
+router.get("/:id/edit", appointmentController.showEditForm);
+router.post("/:id/update", appointmentController.updateAppointment);
+router.post("/:id/delete", appointmentController.deleteAppointment);
 
 module.exports = router;

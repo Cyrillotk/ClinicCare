@@ -1,11 +1,18 @@
-<%- include('../partials/header', { title: 'Home' }) %>
+<%- include('../partials/header', { title: 'Home', bodyClass: 'auth-page' }) %>
 
-<h1><strong>WELCOME TO CLINICCARE</strong></h1>
-<p>A Clinic Appointment Registration and Management System where patients get reliable services.</p>
+<div class="blur-bg"></div>
+<div class="bg-tint"></div>
 
-<p>
-    <a href="/login">Login</a> &nbsp;|&nbsp;
-    <a href="/register">Register</a>
-</p>
+<div class="auth-card" style="max-width: 480px; text-align: center;">
+
+    <div class="brand" style="justify-content: center;"><span class="dot"></span> ClinicCare</div>
+
+    <h1>Welcome to ClinicCare</h1>
+    <p class="subtitle">A clinic appointment registration and management system where patients get reliable services.</p>
+
+    <a href="/login"><button type="button">Login</button></a>
+    <p><a href="/register">Don't have an account? Register</a></p>
+
+</div>
 
 <%- include('../partials/footer') %>

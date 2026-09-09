@@ -1,37 +1,75 @@
+:root {
+    --color-primary: #3EAE74;
+    --color-primary-dark: #2E8B5B;
+    --color-primary-light: #EAF8F0;
+    --color-dark: #1F232B;
+    --color-text: #23262B;
+    --color-white: #ffffff;
+    --radius: 16px;
+    --radius-sm: 10px;
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+* {
+    box-sizing: border-box;
+}
+
 body {
-    font-family: Arial, Helvetica, sans-serif;
-    max-width: 900px;
+    font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+    margin: 0;
+    padding: 0;
+    color: var(--color-text);
+    background: #f4f7f5;
+}
+
+/* ---------- Standard app pages (dashboard, patients, doctors, appointments) ---------- */
+
+.page-wrap {
+    max-width: 1000px;
     margin: 0 auto;
-    padding: 20px;
-    color: #222;
-    background: #f7f8fa;
+    padding: 24px;
 }
 
 h1 {
-    color: #1a4d8f;
+    color: var(--color-primary-dark);
+}
+
+nav {
+    background: var(--color-white);
+    border-radius: var(--radius-sm);
+    padding: 14px 18px;
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
 }
 
 nav a {
-    margin-right: 15px;
+    margin-right: 18px;
     text-decoration: none;
-    color: #1a4d8f;
-    font-weight: bold;
+    color: var(--color-primary-dark);
+    font-weight: 600;
+}
+
+nav a:hover {
+    color: var(--color-primary);
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
-    background: #fff;
+    background: var(--color-white);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    box-shadow: var(--shadow);
 }
 
 th, td {
     text-align: left;
-    padding: 8px 10px;
-    border: 1px solid #ddd;
+    padding: 10px 12px;
+    border-bottom: 1px solid #eee;
 }
 
 th {
-    background: #1a4d8f;
+    background: var(--color-primary);
     color: #fff;
 }
 
@@ -39,33 +77,49 @@ form input,
 form select,
 form textarea {
     display: block;
-    margin-bottom: 12px;
-    padding: 6px;
+    margin-bottom: 14px;
+    padding: 10px 12px;
     width: 100%;
     max-width: 400px;
     box-sizing: border-box;
+    border: 1px solid #d7ded9;
+    border-radius: var(--radius-sm);
+    background: var(--color-primary-light);
+    font-size: 14px;
+}
+
+form input:focus,
+form select:focus,
+form textarea:focus {
+    outline: none;
+    border-color: var(--color-primary);
 }
 
 form label {
-    font-weight: bold;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 4px;
+    color: var(--color-dark);
 }
 
 button {
-    padding: 8px 16px;
-    background: #1a4d8f;
+    padding: 10px 20px;
+    background: var(--color-primary);
     color: #fff;
     border: none;
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
     cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
 }
 
 button:hover {
-    background: #123a6b;
+    background: var(--color-primary-dark);
 }
 
 .alert {
     padding: 10px 14px;
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
     margin-bottom: 15px;
 }
 
@@ -92,18 +146,18 @@ button:hover {
 }
 
 .card {
-    background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    padding: 15px 20px;
+    background: var(--color-white);
+    border-radius: var(--radius);
+    padding: 18px 22px;
     flex: 1;
     text-align: center;
+    box-shadow: var(--shadow);
 }
 
 .card .count {
-    font-size: 28px;
+    font-size: 30px;
     font-weight: bold;
-    color: #1a4d8f;
+    color: var(--color-primary);
 }
 
 .search-bar {
@@ -117,4 +171,104 @@ button:hover {
 
 .search-bar button {
     vertical-align: top;
+}
+
+/* ---------- Auth pages (login / register / home) with blurred background ---------- */
+
+body.auth-page {
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.blur-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("/images/auth-bg.jpg");
+    background-size: cover;
+    background-position: center;
+    z-index: 0;
+}
+
+.blur-bg::after {
+    content: "";
+}
+
+.bg-tint {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(160deg, rgba(31, 35, 43, 0.75), rgba(46, 139, 91, 0.55));
+    z-index: 1;
+}
+
+.auth-card {
+    position: relative;
+    z-index: 2;
+    background: var(--color-white);
+    border-radius: 24px;
+    box-shadow: var(--shadow);
+    padding: 36px 40px;
+    width: 100%;
+    max-width: 400px;
+}
+
+.auth-card h1 {
+    margin-top: 0;
+    color: var(--color-dark);
+    font-size: 24px;
+}
+
+.auth-card .subtitle {
+    color: #6b7280;
+    margin-bottom: 24px;
+    font-size: 14px;
+}
+
+.auth-card button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 6px;
+}
+
+.auth-card p {
+    text-align: center;
+    margin-top: 18px;
+    font-size: 14px;
+}
+
+.auth-card a {
+    color: var(--color-primary-dark);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.auth-card a:hover {
+    text-decoration: underline;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    color: var(--color-primary-dark);
+    font-weight: 700;
+    font-size: 18px;
+}
+
+.brand .dot {
+    width: 10px;
+    height: 10px;
+    background: var(--color-primary);
+    border-radius: 50%;
 }

@@ -1,27 +1,31 @@
-<%- include('../partials/header', { title: 'Login' }) %>
-<%- include('../partials/messages') %>
+<%- include('../partials/header', { title: 'Login', bodyClass: 'auth-page' }) %>
 
-<h1>ClinicCare Login</h1>
+<div class="blur-bg"></div>
+<div class="bg-tint"></div>
 
-<form action="/login" method="POST">
+<div class="auth-card">
 
-    <div>
+    <div class="brand"><span class="dot"></span> ClinicCare</div>
+
+    <h1>Welcome back</h1>
+    <p class="subtitle">Sign in to manage patients and appointments</p>
+
+    <%- include('../partials/messages') %>
+
+    <form action="/login" method="POST">
+
         <label for="username">Username</label>
         <input type="text" id="username" name="username" required>
-    </div>
 
-    <div>
         <label for="password">Password</label>
         <input type="password" id="password" name="password" required>
-    </div>
 
-    <button type="submit">Login</button>
+        <button type="submit">Login</button>
 
-</form>
+    </form>
 
-<p>
-    Don't have an account?
-    <a href="/register">Register</a>
-</p>
+    <p>Don't have an account? <a href="/register">Register</a></p>
+
+</div>
 
 <%- include('../partials/footer') %>
