@@ -1,0 +1,27 @@
+<%- include('../partials/header', { title: 'Add Doctor' }) %>
+<%- include('../partials/nav') %>
+<%- include('../partials/messages') %>
+
+<h1>Add New Doctor</h1>
+
+<form action="/doctors" method="POST">
+
+    <label for="name">Full Name</label>
+    <input type="text" id="name" name="name" required>
+
+    <label for="specialization">Specialization</label>
+    <input type="text" id="specialization" name="specialization" required>
+
+    <label for="phone">Phone</label>
+    <input type="text" id="phone" name="phone" required>
+
+    <label for="availableDays">Available Days (comma-separated)</label>
+    <input type="text" id="availableDays" name="availableDays" placeholder="Mon, Wed, Fri">
+
+    <button type="submit">Save Doctor</button>
+
+</form>
+
+<p><a href="/doctors">Back to Doctors</a></p>
+
+<%- include('../partials/footer') %>

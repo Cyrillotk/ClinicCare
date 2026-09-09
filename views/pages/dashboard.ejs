@@ -1,45 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Dashboard - ClinicCare</title>
-</head>
+<%- include('../partials/header', { title: 'Dashboard' }) %>
+<%- include('../partials/nav') %>
+<%- include('../partials/messages') %>
 
-<body>
+<h1>ClinicCare Dashboard</h1>
 
-    <h1>ClinicCare Dashboard</h1>
+<p>Welcome, <%= username %>!</p>
 
-    <p>
-        Welcome, <%= username %>!
-    </p>
+<div class="card-row">
+    <div class="card">
+        <div class="count"><%= patientCount %></div>
+        <div>Patients</div>
+    </div>
 
-    <nav>
+    <div class="card">
+        <div class="count"><%= doctorCount %></div>
+        <div>Doctors</div>
+    </div>
 
-        <a href="/patients">
-            Patients
-        </a>
+    <div class="card">
+        <div class="count"><%= appointmentCount %></div>
+        <div>Appointments</div>
+    </div>
+</div>
 
-        <br><br>
-
-        <a href="/doctors">
-            Doctors
-        </a>
-
-        <br><br>
-
-        <a href="/appointments">
-            Appointments
-        </a>
-
-    </nav>
-
-    <br>
-
-    <form action="/logout" method="POST">
-        <button type="submit">
-            Logout
-        </button>
-    </form>
-
-</body>
-</html>
+<%- include('../partials/footer') %>

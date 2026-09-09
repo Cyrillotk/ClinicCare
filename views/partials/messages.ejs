@@ -1,0 +1,11 @@
+<% if (typeof messages !== "undefined") { %>
+
+    <% messages.success.forEach(function(msg) { %>
+        <div class="alert alert-success"><%= msg %></div>
+    <% }) %>
+
+    <% messages.error.forEach(function(msg) { %>
+        <div class="alert alert-error"><%= msg %></div>
+    <% }) %>
+
+<% } %>

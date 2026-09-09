@@ -1,12 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ClinicCare</title>
-</head>
-<body>
-    <h1><strong>WELCOME TO CLINICCARE</strong></h1>
-    <P>A Clinic Appointment Registration and Management System where Patients get reliable services</P>
-</body>
-</html>
+<%- include('../partials/header', { title: 'Home' }) %>
+
+<h1><strong>WELCOME TO CLINICCARE</strong></h1>
+<p>A Clinic Appointment Registration and Management System where patients get reliable services.</p>
+
+<p>
+    <a href="/login">Login</a> &nbsp;|&nbsp;
+    <a href="/register">Register</a>
+</p>
+
+<%- include('../partials/footer') %>

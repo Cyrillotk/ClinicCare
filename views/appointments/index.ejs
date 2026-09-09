@@ -1,0 +1,68 @@
+<%- include('../partials/header', { title: 'Appointments' }) %>
+<%- include('../partials/nav') %>
+<%- include('../partials/messages') %>
+
+<h1>Appointments</h1>
+
+<a href="/appointments/new">Add New Appointment</a>
+
+<div class="search-bar">
+    <form action="/appointments" method="GET">
+        <input type="text" name="search" placeholder="Search by patient or doctor name" value="<%= search %>">
+
+        <select name="status">
+            <option value="">All statuses</option>
+            <option value="Scheduled" <%= status === 'Scheduled' ? 'selected' : '' %>>Scheduled</option>
+            <option value="Completed" <%= status === 'Completed' ? 'selected' : '' %>>Completed</option>
+            <option value="Cancelled" <%= status === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
+        </select>
+
+        <button type="submit">Filter</button>
+    </form>
+</div>
+
+<% if (appointments.length === 0) { %>
+
+    <p>No appointments found.</p>
+
+<% } else { %>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Patient</th>
+                <th>Doctor</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Reason</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <% appointments.forEach(function(appt) { %>
+                <tr>
+                    <td><%= appt.patient ? appt.patient.name : '(deleted patient)' %></td>
+                    <td><%= appt.doctor ? appt.doctor.name : '(deleted doctor)' %></td>
+                    <td><%= appt.date.toISOString().slice(0, 10) %></td>
+                    <td><%= appt.time %></td>
+                    <td><%= appt.reason %></td>
+                    <td><%= appt.status %></td>
+
+                    <td class="actions">
+                        <a href="/appointments/<%= appt._id %>/edit">Edit</a>
+
+                        <form action="/appointments/<%= appt._id %>/delete" method="POST"
+                              onsubmit="return confirm('Delete this appointment?');">
+                            <button type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+
+<% } %>
+
+<%- include('../partials/footer') %>

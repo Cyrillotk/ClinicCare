@@ -1,78 +1,58 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Patients - ClinicCare</title>
-</head>
+<%- include('../partials/header', { title: 'Patients' }) %>
+<%- include('../partials/nav') %>
+<%- include('../partials/messages') %>
 
-<body>
+<h1>Patients</h1>
 
-    <h1>Patients</h1>
+<a href="/patients/new">Add New Patient</a>
 
-    <a href="/patients/new">Add New Patient</a>
+<div class="search-bar">
+    <form action="/patients" method="GET">
+        <input type="text" name="search" placeholder="Search by name, ID or phone" value="<%= search %>">
+        <button type="submit">Search</button>
+    </form>
+</div>
 
-    <br><br>
+<% if (patients.length === 0) { %>
 
-    <% if (patients.length === 0) { %>
+    <p>No patients registered yet.</p>
 
-        <p>No patients registered yet.</p>
+<% } else { %>
 
-    <% } else { %>
+    <table>
+        <thead>
+            <tr>
+                <th>Patient ID</th>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Gender</th>
+                <th>Phone</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
 
-        <table border="1" cellpadding="10">
-
-            <thead>
+        <tbody>
+            <% patients.forEach(function(patient) { %>
                 <tr>
-                    <th>Patient ID</th>
-                    <th>Name</th>
-                    <th>Age</th>
-                    <th>Gender</th>
-                    <th>Phone</th>
-                    <th>Actions</th>
+                    <td><%= patient.patientId %></td>
+                    <td><%= patient.name %></td>
+                    <td><%= patient.age %></td>
+                    <td><%= patient.gender %></td>
+                    <td><%= patient.phone %></td>
+
+                    <td class="actions">
+                        <a href="/patients/<%= patient._id %>/edit">Edit</a>
+
+                        <form action="/patients/<%= patient._id %>/delete" method="POST"
+                              onsubmit="return confirm('Delete this patient?');">
+                            <button type="submit">Delete</button>
+                        </form>
+                    </td>
                 </tr>
-            </thead>
+            <% }) %>
+        </tbody>
+    </table>
 
-            <tbody>
+<% } %>
 
-                <% patients.forEach(patient => { %>
-
-                    <tr>
-                        <td><%= patient.patientId %></td>
-                        <td><%= patient.name %></td>
-                        <td><%= patient.age %></td>
-                        <td><%= patient.gender %></td>
-                        <td><%= patient.phone %></td>
-
-                        <td>
-
-                            <a href="/patients/<%= patient._id %>/edit">
-                                Edit
-                            </a>
-
-                            <form
-                                action="/patients/<%= patient._id %>/delete"
-                                method="POST"
-                                style="display:inline;"
-                            >
-                                <button type="submit">
-                                    Delete
-                                </button>
-                            </form>
-
-                        </td>
-                    </tr>
-
-                <% }) %>
-
-            </tbody>
-
-        </table>
-
-    <% } %>
-
-    <br>
-
-    <a href="/dashboard">Dashboard</a>
-
-</body>
-</html>
+<%- include('../partials/footer') %>
